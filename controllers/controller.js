@@ -124,20 +124,20 @@ class authController {
           const { filename: name, path } = req.file;
           const file = new File({
             name,
-            url: path // путь для загруженного файла
+            url: path 
           });
           await file.save();
           const params = new ResourceParams({
             resource: resource._id,
             statement: 'Заявление',
-            files: [file._id] // добавляем загруженный файл в параметры
+            files: [file._id]
           });
           await params.save();
           const resource = new Resource({
             title,
             description,
             params: params._id,
-            files: [file._id] // добавляем загруженный файл в ресурс
+            files: [file._id]
           });
           await resource.save();
           res.status(201).json(resource);

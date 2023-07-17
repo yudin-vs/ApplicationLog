@@ -54,18 +54,38 @@ function Alert(props) {
   return <MuiAlert elevation={6} variant="filled" {...props} />;
 }
 
-function CreateResource() {
-  const [error, setError] = useState(null);
-  const navigate = useNavigate();
+const CreateResource = () => {
+  const apiUrl = "http://localhost:5000/api/";
   const classes = useStyles();
-  
-  const [file, setFile] = useState("");
-    function handleFile(e) {
-        console.log(e.target.file)
-        setFile(e.target.files[0])
-  
+  const [file, setFile] = useState(null);
 
- 
+  const handleSubmit = (e) => {
+    e.preventDefault();
+
+    
+    const formData = new FormData();
+    formData.append('title', e.target.title.value);
+    formData.append('description', e.target.description.value);
+    formData.append('file', file);
+
+    
+    fetch(`${apiUrl}create`, {
+      method: 'POST',
+      body: formData,
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        
+        console.log('Resource created:', data);
+        navigate(-1); 
+      })
+      .catch((error) => {
+        console.error('Error creating resource:', error);
+      });
+  };
+
+  const handleFile = (e) => {
+    setFile(e.target.files[0]);
   };
   
   console.log(file)
@@ -75,7 +95,7 @@ function CreateResource() {
       <form id="form">
         <div className={classes.input}>
           <Box>
-            {/* <label>
+            <label>
               название:
               <TextField
                 margin="normal"
@@ -100,7 +120,7 @@ function CreateResource() {
                 autoComplete="description"
                 autoFocus
               />
-            </label> */}
+            </label>
             <label style={{ display: "flex", flexDirection: "column" }}>
               формы документов:
               <TextField
@@ -112,9 +132,9 @@ function CreateResource() {
             </label>  
           </Box>
           <Box>
-            {/* <Button variant="contained" color="primary" type="submit">
+            <Button variant="contained" color="primary" type="submit">
               сохранить
-            </Button> */}
+            </Button>
             <Button variant="outlined" color="inherit" 
               component={Link} onClick={() => navigate(-1)}>
               отмена
